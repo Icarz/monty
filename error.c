@@ -1,7 +1,7 @@
 #include "main.h"
 
 /**
- * err - Prints appropriate error messages based on the error code.
+ * errors - Prints appropriate error messages based on the error code.
  * @error_code: The error codes are as follows:
  *              1: User did not provide a file or provided more than one.
  *              2: File cannot be opened or read.
@@ -12,7 +12,7 @@
  *              7: Stack is empty for "pop".
  *              8: Stack is too short for the operation.
  */
-void err(int error_code, ...)
+void errors(int error_code, ...)
 {
 	va_list ag;
 	char *op;
@@ -46,14 +46,14 @@ void err(int error_code, ...)
 }
 
 /**
- * more_err - Handles additional specific errors.
+ * more_errors - Handles additional specific errors.
  * @error_code: The error codes are as follows:
  *              6: Stack is empty for "pint".
  *              7: Stack is empty for "pop".
  *              8: Stack is too short for the operation.
  *              9: Division by zero.
  */
-void more_err(int error_code, ...)
+void more_errors(int error_code, ...)
 {
 	va_list ag;
 	char *op;
@@ -84,12 +84,12 @@ void more_err(int error_code, ...)
 }
 
 /**
- * string_err - Handles errors related to string operations.
+ * string_errors - Handles errors related to string operations.
  * @error_code: The error codes are as follows:
  *              10: Number in node is outside ASCII bounds.
  *              11: Stack is empty.
  */
-void string_err(int error_code, ...)
+void string_errors(int error_code, ...)
 {
 	va_list ag;
 	int l_num;

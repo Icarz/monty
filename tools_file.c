@@ -1,29 +1,29 @@
 #include "main.h"
 
 /**
- * open_file - Opens a file.
+ * open_files - Opens a file.
  * @file_name: The path of the file to open.
  *
  * Return: void.
  */
-void open_file(char *file_name)
+void open_files(char *file_name)
 {
 	FILE *fd = fopen(file_name, "r");
 
 	if (file_name == NULL || fd == NULL)
-		err(2, file_name);
+		errors(2, file_name);
 
-	read_file(fd);
+	read_files(fd);
 	fclose(fd);
 }
 
 /**
- * read_file - Reads a file line by line.
+ * read_files - Reads a file line by line.
  * @fd: Pointer to the file descriptor.
  *
  * Return: void.
  */
-void read_file(FILE *fd)
+void read_files(FILE *fd)
 {
 	int line_number, format = 0;
 	char *buffer = NULL;
@@ -31,13 +31,13 @@ void read_file(FILE *fd)
 
 	for (line_number = 1; getline(&buffer, &len, fd) != -1; line_number++)
 	{
-		format = parse_line(buffer, line_number, format);
+		format = parses_line(buffer, line_number, format);
 	}
 	free(buffer);
 }
 
 /**
- * parse_line - Parses a line into tokens to determine
+ * parses_line - Parses a line into tokens to determine
  * which function to call.
  * @buffer: Line from the file.
  * @line_number: The line number in the file.
@@ -46,13 +46,13 @@ void read_file(FILE *fd)
  *
  * Return: 0 if the opcode is for stack, 1 if for queue.
  */
-int parse_line(char *buffer, int line_number, int format)
+int parses_line(char *buffer, int line_number, int format)
 {
 	char *opcode, *value;
 	const char *delim = "\n ";
 
 	if (buffer == NULL)
-		err(4);
+		errors(4);
 
 	opcode = strtok(buffer, delim);
 	if (opcode == NULL)
@@ -64,12 +64,12 @@ int parse_line(char *buffer, int line_number, int format)
 	if (strcmp(opcode, "queue") == 0)
 		return (1);
 
-	find_func(opcode, value, line_number, format);
+	find_function(opcode, value, line_number, format);
 	return (format);
 }
 
 /**
- * find_func - Finds the appropriate function for the opcode.
+ * find_function - Finds the appropriate function for the opcode.
  * @opcode: The opcode string.
  * @value: Argument for the opcode.
  * @ln: Line number of the instruction.
@@ -78,7 +78,7 @@ int parse_line(char *buffer, int line_number, int format)
  *
  * Return: void.
  */
-void find_func(char *opcode, char *value, int ln, int format)
+void find_function(char *opcode, char *value, int ln, int format)
 {
 	int i;
 	int flag;
@@ -93,10 +93,10 @@ void find_func(char *opcode, char *value, int ln, int format)
 		{"add", add_nodes},
 		{"sub", sub_nodes},
 		{"div", div_nodes},
-		{"mul", mul_nodes},
-		{"mod", mod_nodes},
-		{"pchar", print_char},
-		{"pstr", print_str},
+		{"mul", multiplies_nodes},
+		{"mod", modulus_nodes},
+		{"pchar", print_charr},
+		{"pstr", print_string},
 		{"rotl", rotl},
 		{"rotr", rotr},
 		{NULL, NULL}
@@ -109,16 +109,16 @@ void find_func(char *opcode, char *value, int ln, int format)
 	{
 		if (strcmp(opcode, func_list[i].opcode) == 0)
 		{
-			call_fun(func_list[i].f, opcode, value, ln, format);
+			call_function(func_list[i].f, opcode, value, ln, format);
 			flag = 0;
 		}
 	}
 	if (flag == 1)
-		err(3, ln, opcode);
+		errors(3, ln, opcode);
 }
 
 /**
- * call_fun - Calls the required function for the opcode.
+ * call_function - Calls the required function for the opcode.
  * @func: Pointer to the function to call.
  * @op: String representing the opcode.
  * @val: String representing a numeric value.
@@ -128,7 +128,7 @@ void find_func(char *opcode, char *value, int ln, int format)
  *
  * Return: void.
  */
-void call_fun(op_func func, char *op, char *val, int ln, int format)
+void call_function(op_func func, char *op, char *val, int ln, int format)
 {
 	stack_t *node;
 	int flag;
@@ -143,11 +143,11 @@ void call_fun(op_func func, char *op, char *val, int ln, int format)
 			flag = -1;
 		}
 		if (val == NULL)
-			err(5, ln);
+			errors(5, ln);
 		for (i = 0; val[i] != '\0'; i++)
 		{
 			if (isdigit(val[i]) == 0)
-				err(5, ln);
+				errors(5, ln);
 		}
 		node = create_node(atoi(val) * flag);
 		if (format == 0)
